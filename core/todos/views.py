@@ -34,6 +34,18 @@ class TodoCreateView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+class CompletedTodosView(APIView):
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request: Request) -> Response:
+        completed_todos = request.user.todos.filter(completed=True)
+
+        serializer = TodoSerializer(completed_todos, many=True)
+        return Response(serializer.data)
+
+
 class TodoDetailView(APIView):
 
     authentication_classes = [TokenAuthentication]
